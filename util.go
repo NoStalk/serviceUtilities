@@ -45,15 +45,16 @@ type PlatformDataModel struct {
 }
 
 type ContestData struct {
-	Name string
+	ContestName string
 	Rank int64
-	Solved int32
-	Rating int64
+	OldRating int64
+	NewRating int64
+	ContestID int64
 }
 type SubmissionData struct {
 	ProblemUrl string
 	ProblemName string
-	SubmissionDate time.Time
+	SubmissionDate string
 	SubmissionLanguage string
 	SubmissionStatus string
 	CodeUrl string
@@ -66,7 +67,6 @@ type DBResources struct {
 	selectedCollection *mongo.Collection
 }
 
-var dbResources DBResources = DBResources{};
 /**
 * @brief: This function is used to create a new connection to the database.
 * @param: None.
@@ -82,7 +82,7 @@ func OpenDatabaseConnection(mongoURI string) (DBResources, error){
 		return DBResources{}, err;
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second);
-
+	var dbResources DBResources;
 	err = client.Connect(ctx);
 	if err != nil {
 		log.Printf("Cant connect to mongodb: %v", err);
@@ -165,22 +165,6 @@ func GetLastSubmission(email string, platform string, dbResources DBResources) S
 
 
 
-/**
-* @brief: This function is used as an orchestration function to call all the other functions.
-* @param: a mongo.Client object, a context object, and an email string.
-* @return: None.
-**/
-
-
-func UpdatePlatformData(dbResources DBResources,email string, platform string){
-	appendContestData(dbResources.selectedCollection, email, platform);
-	appendSubmissionData(dbResources.selectedCollection, email, platform);
-	
-}
-
-
-
-
 
 
 /**
@@ -193,8 +177,8 @@ func UpdatePlatformData(dbResources DBResources,email string, platform string){
 
 
 
-func FindContestsandSubmissionsFromDB(selectedCollection *mongo.Collection, email string) ([]ContestData,[]SubmissionData){
-
+func FindContestsandSubmissionsFromDB(dbResources DBResources, email string) ([]ContestData,[]SubmissionData){
+	selectedCollection := dbResources.selectedCollection;
 	filter := bson.M{"email": email};
 	var userMap map[string]interface{};
 	var result bson.M;
@@ -232,14 +216,8 @@ func FindContestsandSubmissionsFromDB(selectedCollection *mongo.Collection, emai
 * @return: None.
 **/
 
-func appendContestData(selectedCollection *mongo.Collection, email string, platform string){
-	var newContestData []ContestData = []ContestData{
-		{Name: "Test",
-		Rank: 1,
-		Solved: 1,
-		Rating: 1,
-	},
-	}
+func AppendContestData(dbResources DBResources, email string, platform string, newContestData []ContestData){
+	selectedCollection := dbResources.selectedCollection;
 	// var updatedContests []ContestData = append(staleContestData, newContestData);
 	updateContestQuery := bson.M{"$push": bson.M{"platformData."+platform+".contests": bson.M{"$each":newContestData}}};
 	filter := bson.M{"email": email};
@@ -254,16 +232,8 @@ func appendContestData(selectedCollection *mongo.Collection, email string, platf
 
 
 
-func appendSubmissionData(selectedCollection *mongo.Collection, email string, platform string){
-	var newSubmissionData []SubmissionData = []SubmissionData{
-		{ProblemUrl: "Test",
-		ProblemName: "Test",
-		SubmissionDate: time.Now(),
-		SubmissionLanguage: "Test",
-		SubmissionStatus: "Test",
-		CodeUrl: "Test",
-	},
-	}
+func AppendSubmissionData(dbResources DBResources, email string, platform string, newSubmissionData []SubmissionData ){
+	selectedCollection := dbResources.selectedCollection;
 	// var updatedSubmissions []SubmissionData = append(staleSubmissionData, newSubmissionData);
 	updateSubmissionQuery := bson.M{"$push": bson.M{"platformData."+platform+".submissions": bson.M{"$each":newSubmissionData}}};
 	filter := bson.M{"email": email};
