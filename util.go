@@ -216,7 +216,7 @@ func FindContestsandSubmissionsFromDB(dbResources DBResources, email string) ([]
 * @return: None.
 **/
 
-func AppendContestData(dbResources DBResources, email string, platform string, newContestData []ContestData){
+func AppendContestData(dbResources DBResources, email string, platform string, newContestData []ContestData) error {
 	selectedCollection := dbResources.selectedCollection;
 	// var updatedContests []ContestData = append(staleContestData, newContestData);
 	updateContestQuery := bson.M{"$push": bson.M{"platformData."+platform+".contests": bson.M{"$each":newContestData}}};
@@ -226,13 +226,15 @@ func AppendContestData(dbResources DBResources, email string, platform string, n
 	_, err := selectedCollection.UpdateOne(context.TODO(), filter, updateContestQuery);
 	if err != nil {
 		log.Fatalf("Couldnt update user: %v", err);
+		return err;
 	}
 	fmt.Println("Updated user");
+	return nil;
 }
 
 
 
-func AppendSubmissionData(dbResources DBResources, email string, platform string, newSubmissionData []SubmissionData ){
+func AppendSubmissionData(dbResources DBResources, email string, platform string, newSubmissionData []SubmissionData ) error {
 	selectedCollection := dbResources.selectedCollection;
 	// var updatedSubmissions []SubmissionData = append(staleSubmissionData, newSubmissionData);
 	updateSubmissionQuery := bson.M{"$push": bson.M{"platformData."+platform+".submissions": bson.M{"$each":newSubmissionData}}};
@@ -242,8 +244,10 @@ func AppendSubmissionData(dbResources DBResources, email string, platform string
 	_, err := selectedCollection.UpdateOne(context.TODO(), filter, updateSubmissionQuery);
 	if err != nil {
 		log.Fatalf("Couldnt update user: %v", err);
+		return err;
 	}
 	fmt.Println("Updated user");
+	return nil;
 }
 
 
