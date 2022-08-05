@@ -47,9 +47,9 @@ type PlatformDataModel struct {
 type ContestData struct {
 	ContestName string
 	Rank int64
-	OldRating int64
-	NewRating int64
-	ContestID int64
+	Rating float64
+	Solved int32
+	ContestID string
 }
 type SubmissionData struct {
 	ProblemUrl string
