@@ -40,7 +40,7 @@ type Platforms struct{
 type PlatformDataModel struct {
 	Handle string
 	TotalSolved int32
-	Ranking int64
+	Ranking float64
 	Contests []ContestData
 	Submissions []SubmissionData
 }
@@ -48,7 +48,7 @@ type PlatformDataModel struct {
 type ContestData struct {
 	ContestName string
 	ContestDate string
-	Rank int64
+	Rank float64
 	Rating float64
 	Solved int32
 	ContestID string
@@ -268,6 +268,11 @@ func AppendSubmissionData(dbResources DBResources, email string, platform string
 }
 
 
+
+
+func JSONSubmissionToDBStructConverter(){
+
+}
 
 
 
