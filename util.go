@@ -114,7 +114,7 @@ func GetLastContest(email string, platform string, dbResources DBResources) Cont
 	filter := bson.M{
 		"email": email,
 	};
-	opts := options.FindOne().SetProjection(bson.M{"platformData."+ platform+".contests": 1});
+	opts := options.FindOne().SetProjection(bson.M{"platformData."+ strings.ToLower(platform) +".contests": 1});
 	err := dbResources.selectedCollection.FindOne(dbResources.ctx, filter,opts).Decode(&documentResult);
 
 	if err != nil {
@@ -148,7 +148,7 @@ func GetLastSubmission(email string, platform string, dbResources DBResources) S
 	filter := bson.M{
 		"email": email,
 	};
-	opts := options.FindOne().SetProjection(bson.M{"platformData."+strings.ToLower(platform)+".submissions": 1});
+	opts := options.FindOne().SetProjection(bson.M{"platformData."+ strings.ToLower(platform) +".submissions": 1});
 	err := dbResources.selectedCollection.FindOne(dbResources.ctx, filter,opts).Decode(&documentResult);
 
 	if err != nil {
@@ -242,7 +242,7 @@ func AppendContestData(dbResources DBResources, email string, platform string, n
 func AppendSubmissionData(dbResources DBResources, email string, platform string, newSubmissionData []SubmissionData ) error {
 	selectedCollection := dbResources.selectedCollection;
 	// var updatedSubmissions []SubmissionData = append(staleSubmissionData, newSubmissionData);
-	updateSubmissionQuery := bson.M{"$push": bson.M{"platformData."+strings.ToLower(platform)+".submissions": bson.M{"$each":newSubmissionData}}};
+	updateSubmissionQuery := bson.M{"$push": bson.M{"platformData."+ strings.ToLower(platform) +".submissions": bson.M{"$each":newSubmissionData}}};
 	filter := bson.M{"email": email};
 	// updatedUserSchemaDoc := bson.M{"$set": bson.M{"platformData.leetcode.submissions": updatedSubmissionQuery}};
 
