@@ -128,7 +128,8 @@ func GetLastContest(email string, platform string, dbResources DBResources) Cont
 	if err != nil {
 		log.Fatalf("Couldnt unmarshal user: %v", err);
 	}
-	return userObject.PlatformData.Leetcode.Contests[len(userObject.PlatformData.Leetcode.Contests)-1];
+	platformdata := getPlatformDataDynamically(&userObject.PlatformData,platform);
+	return platformdata.Contests[len(platformdata.Contests)-1];
 }
 
 
@@ -159,7 +160,8 @@ func GetLastSubmission(email string, platform string, dbResources DBResources) S
 	if err != nil {
 		log.Fatalf("Couldnt unmarshal user: %v", err);
 	}
-	return userObject.PlatformData.Leetcode.Submissions[len(userObject.PlatformData.Leetcode.Submissions)-1];
+	platformData := getPlatformDataDynamically(&userObject.PlatformData,platform);
+	return platformData.Submissions[len(platformData.Submissions)-1];
 }
 
 
