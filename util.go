@@ -128,8 +128,10 @@ func GetLastContest(email string, platform string, dbResources DBResources) Cont
 	if err != nil {
 		log.Fatalf("Couldnt unmarshal user: %v", err);
 	}
-	platformdata := getPlatformDataDynamically(&userObject.PlatformData,platform);
-	return platformdata.Contests[len(platformdata.Contests)-1];
+	
+	platformData := getPlatformDataDynamically(&userObject.PlatformData,platform);
+	fmt.Println(platformData.Contests);
+	return platformData.Contests[len(platformData.Contests)-1];
 }
 
 
@@ -179,7 +181,7 @@ func GetLastSubmission(email string, platform string, dbResources DBResources) S
 
 
 
-func FindContestsandSubmissionsFromDB(dbResources DBResources, email string) ([]ContestData,[]SubmissionData){
+func FindContestsandSubmissionsFromDB(dbResources DBResources, email string, platform string) ([]ContestData,[]SubmissionData){
 	selectedCollection := dbResources.selectedCollection;
 	filter := bson.M{"email": email};
 	var userMap map[string]interface{};
@@ -203,7 +205,7 @@ func FindContestsandSubmissionsFromDB(dbResources DBResources, email string) ([]
 		log.Fatalf("Couldnt unmarshal user: %v", err);
 	}
 
-	platformData := getPlatformDataDynamically(&userObject.PlatformData, "Leetcode");
+	platformData := getPlatformDataDynamically(&userObject.PlatformData, platform);
 	return platformData.Contests, platformData.Submissions;
 }
 
