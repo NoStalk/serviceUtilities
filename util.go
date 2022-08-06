@@ -224,7 +224,7 @@ func FindContestsandSubmissionsFromDB(dbResources DBResources, email string, pla
 func AppendContestData(dbResources DBResources, email string, platform string, newContestData []ContestData) error {
 	selectedCollection := dbResources.selectedCollection;
 	// var updatedContests []ContestData = append(staleContestData, newContestData);
-	updateContestQuery := bson.M{"$push": bson.M{"platformData."+platform+".contests": bson.M{"$each":newContestData}}};
+	updateContestQuery := bson.M{"$push": bson.M{"platformData."+ strings.ToLower(platform) +".contests": bson.M{"$each":newContestData}}};
 	filter := bson.M{"email": email};
 	// updatedUserSchemaDoc := bson.M{"$set": bson.M{"platformData.leetcode.contests": updatedContestQuery}};
 	
@@ -242,7 +242,7 @@ func AppendContestData(dbResources DBResources, email string, platform string, n
 func AppendSubmissionData(dbResources DBResources, email string, platform string, newSubmissionData []SubmissionData ) error {
 	selectedCollection := dbResources.selectedCollection;
 	// var updatedSubmissions []SubmissionData = append(staleSubmissionData, newSubmissionData);
-	updateSubmissionQuery := bson.M{"$push": bson.M{"platformData."+platform+".submissions": bson.M{"$each":newSubmissionData}}};
+	updateSubmissionQuery := bson.M{"$push": bson.M{"platformData."+strings.ToLower(platform)+".submissions": bson.M{"$each":newSubmissionData}}};
 	filter := bson.M{"email": email};
 	// updatedUserSchemaDoc := bson.M{"$set": bson.M{"platformData.leetcode.submissions": updatedSubmissionQuery}};
 
