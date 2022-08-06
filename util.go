@@ -47,6 +47,7 @@ type PlatformDataModel struct {
 
 type ContestData struct {
 	ContestName string
+	ContestDate string
 	Rank int64
 	Rating float64
 	Solved int32
@@ -131,7 +132,11 @@ func GetLastContest(email string, platform string, dbResources DBResources) Cont
 	}
 	
 	platformData := getPlatformDataDynamically(&userObject.PlatformData,platform);
-	fmt.Println(platformData.Contests);
+
+	if(len(platformData.Contests)==0){
+		var emptyContestDataStruct = ContestData{};
+		return emptyContestDataStruct;
+	}
 	return platformData.Contests[len(platformData.Contests)-1];
 }
 
@@ -164,7 +169,14 @@ func GetLastSubmission(email string, platform string, dbResources DBResources) S
 		log.Fatalf("Couldnt unmarshal user: %v", err);
 	}
 	platformData := getPlatformDataDynamically(&userObject.PlatformData,platform);
+
+	if (len(platformData.Submissions) == 0){
+		var emptySubmissionDataStruct SubmissionData = SubmissionData{}
+		return emptySubmissionDataStruct;
+	} 
+
 	return platformData.Submissions[len(platformData.Submissions)-1];
+
 }
 
 
