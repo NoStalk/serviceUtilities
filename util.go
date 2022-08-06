@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -113,7 +114,7 @@ func GetLastContest(email string, platform string, dbResources DBResources) Cont
 	filter := bson.M{
 		"email": email,
 	};
-	opts := options.FindOne().SetProjection(bson.M{"platformData."+platform+".contests": 1});
+	opts := options.FindOne().SetProjection(bson.M{"platformData."+ platform+".contests": 1});
 	err := dbResources.selectedCollection.FindOne(dbResources.ctx, filter,opts).Decode(&documentResult);
 
 	if err != nil {
@@ -147,7 +148,7 @@ func GetLastSubmission(email string, platform string, dbResources DBResources) S
 	filter := bson.M{
 		"email": email,
 	};
-	opts := options.FindOne().SetProjection(bson.M{"platformData."+platform+".submissions": 1});
+	opts := options.FindOne().SetProjection(bson.M{"platformData."+strings.ToLower(platform)+".submissions": 1});
 	err := dbResources.selectedCollection.FindOne(dbResources.ctx, filter,opts).Decode(&documentResult);
 
 	if err != nil {
