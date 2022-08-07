@@ -11,7 +11,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	//"go.mongodb.org/mongo-driver/mongo/readpref"
+	platformDatapb "github.com/NoStalk/protoDefinitions"
+
+	
 )
 
 /**
@@ -76,7 +78,7 @@ type DBResources struct {
 **/
 
 func OpenDatabaseConnection(mongoURI string) (DBResources, error){
-	
+
 	client,err := mongo.NewClient(options.Client().ApplyURI(mongoURI));
 	
 	if err != nil {
@@ -270,8 +272,39 @@ func AppendSubmissionData(dbResources DBResources, email string, platform string
 
 
 
-func JSONSubmissionToDBStructConverter(){
+func FormatSubmissionDBToGRPC(submissionDataforDB []SubmissionData) []*platformDatapb.Submission {
+	var grpcSubmissionData []*platformDatapb.Submission;
 
+	for _,submission := range submissionDataforDB{
+		submissionResponseObject := platformDatapb.Submission{
+			Date: submission.SubmissionDate,
+			Language: submission.SubmissionLanguage,
+			ProblemStatus: submission.SubmissionStatus,
+			ProblemTitle: submission.ProblemName,
+			ProblemLink: submission.ProblemUrl,
+			CodeLink: submission.CodeUrl,
+		}
+		grpcSubmissionData = append(grpcSubmissionData, &submissionResponseObject);
+
+	}
+	return grpcSubmissionData;
+}
+
+
+func FormatContestDBToGRPC(contestDataforDB []ContestData) []*platformDatapb.Contest{
+	var grpcContestData []*platformDatapb.Contest;
+	
+	for _, contest := range contestDataforDB{
+		contestResponseObject := platformDatapb.Contest{
+			ContestName: contest.ContestName,
+			Rank: contest.Rank,
+			Rating: contest.Rating,
+			ContestId: contest.ContestID,
+			ContestDate: contest.ContestDate,
+		}
+		grpcContestData = append(grpcContestData, &contestResponseObject);
+	}
+	return grpcContestData;
 }
 
 
