@@ -253,6 +253,15 @@ func AppendContestData(dbResources DBResources, email string, platform string, n
 
 
 
+
+/**
+* @brief: This function is used to update the user's submission-data in the database.
+* @param: *mongo.collection, user's email, array of submission-data.
+* @return: None.
+**/
+
+
+
 func AppendSubmissionData(dbResources DBResources, email string, platform string, newSubmissionData []SubmissionData ) error {
 	selectedCollection := dbResources.selectedCollection;
 	// var updatedSubmissions []SubmissionData = append(staleSubmissionData, newSubmissionData);
@@ -270,7 +279,11 @@ func AppendSubmissionData(dbResources DBResources, email string, platform string
 }
 
 
-
+/**
+* @brief: This function is used to format the data that was inserted into DB to the GRPC format that is sent as a response to the client.
+* @param: The submission data that was inserted into DB.
+* @return: SubmissionData array that is formatted to the GRPC format.
+**/
 
 func FormatSubmissionDBToGRPC(submissionDataforDB []SubmissionData) []*platformDatapb.Submission {
 	var grpcSubmissionData []*platformDatapb.Submission;
@@ -289,6 +302,13 @@ func FormatSubmissionDBToGRPC(submissionDataforDB []SubmissionData) []*platformD
 	}
 	return grpcSubmissionData;
 }
+
+
+/**
+* @brief: This function is used to format the data that was inserted into DB to the GRPC format that is sent as a response to the client.
+* @param: The submission data that was inserted into DB.
+* @return: SubmissionData array that is formatted to the GRPC format.
+**/
 
 
 func FormatContestDBToGRPC(contestDataforDB []ContestData) []*platformDatapb.Contest{
