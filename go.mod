@@ -27,4 +27,4 @@ require (
 	google.golang.org/protobuf v1.28.1 // indirect
 )
 
-replace github.com/NoStalk/protoDefinitions => ../protoDefinitions
+// replace github.com/NoStalk/protoDefinitions => ../protoDefinitions

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 
@@ -289,11 +290,15 @@ func formatContestSchemaToGRPCContest(contestDataforDB []ContestData) []*platfor
 	var grpcContestData []*platformDatapb.Contest
 
 	for _, contest := range contestDataforDB {
+		contestIDParsedToFloat,err := strconv.ParseFloat(contest.ContestID, 64)
+		if err != nil {
+			log.Fatalf("Couldnt parse contestID to float: %v", err)
+		}	
 		contestResponseObject := platformDatapb.Contest{
 			ContestName: contest.ContestName,
 			Rank:        contest.Rank,
 			Rating:      contest.Rating,
-			ContestId:   contest.ContestID,
+			ContestId:   contestIDParsedToFloat,
 			ContestDate: contest.ContestDate,
 		}
 		grpcContestData = append(grpcContestData, &contestResponseObject)
@@ -301,14 +306,14 @@ func formatContestSchemaToGRPCContest(contestDataforDB []ContestData) []*platfor
 	return grpcContestData
 }
 
-func CreateGRPCSubmissionResponseFromSubmssionSchema(submissionDataforDB []SubmissionData) *platformDatapb.SubmissionResponse {
+func CreateGRPCSubmissionResponseFromSubmissionSchema(submissionDataforDB []SubmissionData) *platformDatapb.SubmissionResponse {
 	response := &platformDatapb.SubmissionResponse{
 		Submissions: formatSubmissionSchemaToGRPCSubmission(submissionDataforDB),
 	}
 	return response
 }
 
-func CreateGRPCContestResponseFromSubmssionSchema(contestDataforDB []ContestData) *platformDatapb.ContestResponse {
+func CreateGRPCContestResponseFromContestSchema(contestDataforDB []ContestData) *platformDatapb.ContestResponse {
 	response := &platformDatapb.ContestResponse{
 		Contests: formatContestSchemaToGRPCContest(contestDataforDB),
 	}
